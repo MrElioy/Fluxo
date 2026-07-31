@@ -1,8 +1,4 @@
-
-
-
 namespace Fluxo.Domain.Common;
-
 
 public abstract class Entity
 {
@@ -29,11 +25,11 @@ public enum Currency
     EUR,
     Other
 }
-public enum Status
+public enum EntityStatus
 {
     Active,
     Inactive,
-    Eliminated
+    Deleted
 }
 
 //################################################################################################################
@@ -42,31 +38,38 @@ public enum Status
 public class FinancialMovement : Entity
 {
     public Guid AccountId { get; private set; } // Id de la cuenta a la que pertenece el movimiento financiero
-    public DateTime TransactionDate { get; private set; }// Fecha de la transacción del movimiento financiero, se asigna automáticamente al momento de crear el movimiento
+    public DateTime TransactionDate { get; private set; }// Fecha de la transacción del movimiento financiero, no debe ser futura, se debe validar al momento de crear el movimiento
     public DateTime RegisteredAt { get; private set; } = DateTime.UtcNow; // Fecha de registro del movimiento financiero, se asigna automáticamente al momento de crear el movimiento
     public decimal Amount { get; private set; }// Monto del movimiento financiero, no debe ser negativo, se debe usar el campo MovementType para indicar si es un ingreso o un egreso
     public Currency Currency { get; private set; } = Currency.Other;// Moneda del movimiento financiero (ARS, USD, EUR, etc.)
     public MovementType MovementType { get; private set; } = MovementType.Other; // Tipo de movimiento financiero (Ingreso, Egreso, Transferencia, etc.)
     public string? Description { get; private set; }// Descripción del movimiento financiero
-    public Status Status { get; private set; } = Status.Active; // Status del movimiento financiero
+    public EntityStatus Status { get; private set; } = EntityStatus.Active; // Status del movimiento financiero
     public Guid? RelatedMovementId { get; private set; } // Id del movimiento relacionado
     public DateTime? UpdatedAt { get; private set; }// Fecha de última actualización del movimiento
 
-    public FinancialMovement(Guid accountId, decimal amount, DateTime date, string description, MovementType movementType, Currency currency, Guid? relatedMovementId = null)
+    public FinancialMovement(
+        Guid accountId, 
+        decimal amount, 
+        DateTime date, 
+        string description, 
+        MovementType movementType, 
+        Currency currency, 
+        Guid? relatedMovementId = null)
     {
         if (amount <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(amount), "El monto del movimiento financiero no puede ser negativo.");
         }
 
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            throw new ArgumentException("La descripción del movimiento financiero no puede estar vacía.", nameof(description));
-        }
-
-        if (date > DateTime.UtcNow)
+        if (date > DateTime.Today)
         {
             throw new ArgumentOutOfRangeException(nameof(date), "La fecha del movimiento financiero no puede ser futura.");
+        }
+
+        if (accountId == Guid.Empty)
+        {
+            throw new ArgumentException("El Id de la cuenta no puede estar vacío.", nameof(accountId));
         }
 
         AccountId = accountId;
@@ -86,12 +89,16 @@ public class Category : Entity
 {
     public string Name { get; private set; }// Nombre de la categoría
     public string? Description { get; private set; }// Descripción de la categoría
-    public bool IsActive { get; private set; } = true;// Indica si la categoría está activa o no
+    public EntityStatus Status { get; private set; } = EntityStatus.Active;// Indica si la categoría está activa o no
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;// Fecha de creación de la categoría
     public Guid? ParentCategoryId { get; private set; } // Id de la categoría padre, si es que existe
 
     public Category(string name)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException("El nombre de la categoría no puede estar vacío.", nameof(name));
+        }
         Name = name;
     }
 }
@@ -107,6 +114,16 @@ public class MovementCategory
 
     public MovementCategory(Guid movementId, Guid categoryId)
     {
+        if (movementId == Guid.Empty)
+        {
+            throw new ArgumentException("El Id del movimiento financiero no puede estar vacío.", nameof(movementId));
+        }
+
+        if (categoryId == Guid.Empty)
+        {
+            throw new ArgumentException("El Id de la categoría no puede estar vacío.", nameof(categoryId));
+        }
+
         MovementId = movementId;
         CategoryId = categoryId;
     }
