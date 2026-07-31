@@ -4,6 +4,17 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fluxo.Infrastructure.Persistence.Configurations;
 
+// CategoryConfiguration describe el mapeo de la entidad Category hacia la base.
+// Aquí se define la estructura de almacenamiento de categorías, incluyendo:
+// - tabla de categorías,
+// - nombre obligatorio y longitud máxima,
+// - descripción opcional,
+// - estado activo/inactivo,
+// - fecha de creación,
+// - relación jerárquica con ParentCategoryId.
+//
+// Toda esta información pertenece a Infrastructure porque describe el formato
+// físico del almacenamiento, no las reglas de negocio de la categoría.
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
     public void Configure(EntityTypeBuilder<Category> builder)

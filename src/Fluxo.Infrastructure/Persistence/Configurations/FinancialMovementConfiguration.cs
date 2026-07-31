@@ -4,6 +4,17 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fluxo.Infrastructure.Persistence.Configurations;
 
+// Esta configuración define cómo la entidad FinancialMovement se persiste en SQLite.
+// Aquí se indican aspectos técnicos como:
+// - el nombre de la tabla,
+// - la clave primaria,
+// - columnas requeridas,
+// - tipo/longitud de propiedades,
+// - conversión de enums a texto,
+// - índices para búsquedas frecuentes.
+//
+// La intención es que el dominio siga definiendo el significado del movimiento,
+// mientras Infrastructure define cómo se guarda en la base.
 public class FinancialMovementConfiguration : IEntityTypeConfiguration<FinancialMovement>
 {
     public void Configure(EntityTypeBuilder<FinancialMovement> builder)

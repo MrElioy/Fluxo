@@ -3,6 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fluxo.Infrastructure.Persistence.Repositories;
 
+// CategoryRepository centraliza las operaciones de persistencia relacionadas con
+// categorías.
+//
+// Se encarga de abstraer el acceso a la base para que la capa superior no tenga
+// que conocer el detalle de cómo se consultan o se guardan las categorías.
+//
+// En esta versión base, el repositorio expone operaciones simples como:
+// - agregar una categoría,
+// - listar todas,
+// - buscar por Id.
 public class CategoryRepository
 {
     private readonly FluxoDbContext _context;

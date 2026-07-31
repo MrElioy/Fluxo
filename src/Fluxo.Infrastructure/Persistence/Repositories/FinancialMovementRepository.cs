@@ -3,6 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fluxo.Infrastructure.Persistence.Repositories;
 
+// FinancialMovementRepository encapsula las consultas y operaciones de acceso
+// a datos para los movimientos financieros.
+//
+// Su función es evitar que la capa de Application o la UI dependan directamente
+// de DbContext, DbSet o LINQ de EF Core.
+//
+// En esta primera versión se ofrecen operaciones básicas como:
+// - agregar un movimiento,
+// - recuperar todos,
+// - obtener uno por Id.
 public class FinancialMovementRepository
 {
     private readonly FluxoDbContext _context;

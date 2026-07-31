@@ -4,6 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fluxo.Infrastructure.Persistence.Configurations;
 
+// MovementCategoryConfiguration modela la relación entre movimientos y categorías.
+// Esta entidad actúa como tabla intermedia de una relación muchos a muchos.
+//
+// En esta configuración se define:
+// - la clave compuesta MovementId + CategoryId,
+// - las claves foráneas hacia FinancialMovement y Category,
+// - el comportamiento de eliminación en cascada.
+//
+// La idea es evitar duplicados de la misma asociación y mantener la integridad
+// referencial entre las entidades relacionadas.
 public class MovementCategoryConfiguration : IEntityTypeConfiguration<MovementCategory>
 {
     public void Configure(EntityTypeBuilder<MovementCategory> builder)
