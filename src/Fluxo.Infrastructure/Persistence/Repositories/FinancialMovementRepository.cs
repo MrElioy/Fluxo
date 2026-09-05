@@ -1,3 +1,5 @@
+using Fluxo.Application.DTOs.FinancialMovements;
+using Fluxo.Application.Interfaces.Persistence;
 using Fluxo.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 
@@ -62,7 +64,7 @@ public sealed class FinancialMovementFilter
 // - agregar un movimiento,
 // - recuperar todos con filtros opcionales,
 // - obtener uno por Id.
-public class FinancialMovementRepository
+public class FinancialMovementRepository : IFinancialMovementRepository
 {
     private readonly FluxoDbContext _context;
 
@@ -77,10 +79,8 @@ public class FinancialMovementRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<FinancialMovement>> GetAllAsync(FinancialMovementFilter? filter = null, CancellationToken cancellationToken = default)
+    public async Task<List<FinancialMovement>> GetAllAsync(FinancialMovementFilterDto? filter = null, CancellationToken cancellationToken = default)
     {
-        filter?.Validate();
-
         IQueryable<FinancialMovement> query = _context.FinancialMovements
             .AsNoTracking();
 

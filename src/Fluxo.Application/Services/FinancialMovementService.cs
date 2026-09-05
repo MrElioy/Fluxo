@@ -21,6 +21,10 @@ public sealed class FinancialMovementService : IFinancialMovementService
         _repository = repository;
     }
 
+
+//CreateAsync: metodo creado para crear un movimiento financiero, recibe un DTO de tipo CreateFinancialMovementDto
+// y un token de cancelación opcional. Valida los datos del DTO y si son válidos, crea una instancia de FinancialMovement
+// y la guarda en el repositorio. Devuelve un Result con el DTO del movimiento financiero creado o un error si la validación falla.
     public async Task<Result<FinancialMovementDto>> CreateAsync(CreateFinancialMovementDto dto, CancellationToken cancellationToken = default)
     {
         if (dto.AccountId == Guid.Empty)
@@ -65,6 +69,8 @@ public sealed class FinancialMovementService : IFinancialMovementService
         });
     }
 
+//GetAllAsync: metodo creado para obtener todos los movimientos financieros, recibe un filtro opcional de tipo FinancialMovementFilterDto
+//  y un token de cancelación opcional. Llama al repositorio para obtener los movimientos financieros que
     public async Task<Result<List<FinancialMovementDto>>> GetAllAsync(FinancialMovementFilterDto? filter = null, CancellationToken cancellationToken = default)
     {
         var movements = await _repository.GetAllAsync(filter, cancellationToken);
@@ -87,6 +93,10 @@ public sealed class FinancialMovementService : IFinancialMovementService
         return Result<List<FinancialMovementDto>>.Success(items);
     }
 
+
+//GetByIdAsync: metodo creado para obtener un movimiento financiero por su identificador, recibe un Guid id y un token de cancelación opcional.
+//  Valida el id y llama al repositorio para obtener el movimiento financiero correspondiente. Devuelve un Result con el DTO del movimiento
+// financiero o un error si no se encuentra.
     public async Task<Result<FinancialMovementDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if (id == Guid.Empty)
@@ -116,6 +126,10 @@ public sealed class FinancialMovementService : IFinancialMovementService
         });
     }
 
+//UpdateAsync: metodo creado para actualizar un movimiento financiero, recibe un Guid id, un DTO de tipo UpdateFinancialMovementDto
+//  y un token de cancelación opcional. Valida el id y los datos del DTO, llama al repositorio para obtener el movimiento financiero
+// correspondiente y actualiza sus propiedades. Devuelve un Result con el DTO del movimiento financiero actualizado o un error si la validación
+//  falla o no se encuentra el movimiento.
     public async Task<Result<FinancialMovementDto>> UpdateAsync(Guid id, UpdateFinancialMovementDto dto, CancellationToken cancellationToken = default)
     {
         var existing = await _repository.GetByIdAsync(id, cancellationToken);
@@ -150,6 +164,8 @@ public sealed class FinancialMovementService : IFinancialMovementService
         });
     }
 
+//DeleteAsync: metodo creado para eliminar un movimiento financiero, recibe un Guid id y un token de cancelación opcional. Valida el id
+//  y llama al repositorio para obtener el movimiento financiero correspondiente. Devuelve un Result indicando éxito o un error si no se encuentra.
     public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var movement = await _repository.GetByIdAsync(id, cancellationToken);
